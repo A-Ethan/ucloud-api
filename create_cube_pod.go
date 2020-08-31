@@ -8,6 +8,7 @@ package main
 import (
 	"encoding/base64"
 	"fmt"
+	"os"
 
 	"github.com/ucloud/ucloud-sdk-go/ucloud"
 	"github.com/ucloud/ucloud-sdk-go/ucloud/auth"
@@ -19,8 +20,8 @@ func main() {
 	cfg.BaseUrl = "https://api.ucloud.cn"
 
 	cred := auth.NewCredential()
-	cred.PublicKey = "helloPublicKey"
-	cred.PrivateKey = "helloPrivateKey"
+	cred.PublicKey = os.Getenv("UCLOUD_API_PUBLICKEY")
+	cred.PrivateKey = os.Getenv("UCLOUD_API_PRIVATEKEY")
 
 	pod := `apiVersion: v1beta1
 kind: Pod
