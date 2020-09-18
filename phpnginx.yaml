@@ -1,0 +1,102 @@
+apiVersion: v1beta1
+kind: Pod
+metadata:
+  creationTimestamp: '2020-07-27T09:36:47Z'
+  cubeId: cube-vbfii3qe
+  hash: 1316131942
+  provider:
+    containerCount: 3
+    cpuPlatform: V6
+    region: cn-bj2
+    resource:
+      cpu: 2000
+      memory: 2048
+    subnetId: subnet-r0oxidkt
+    vpcId: uvnet-q1anvtk2
+    zone: cn-bj2-02
+  uid: default_default_cube-xo2qoga9
+spec:
+  containers:
+    - image: 'uhub.service.ucloud.cn/hello123/nginx:1.17.10-alpine'
+      name: nginx
+      resources:
+        limits:
+          cpu: '1'
+          memory: 1Gi
+      volumeMounts:
+        - mountPath: /etc/nginx/conf.d/default.conf
+          name: defaultconf
+          subPath: default.conf
+        - mountPath: /usr/share/nginx/html/
+          name: wpnfs
+    - args:
+        - '-R'
+      command:
+        - php-fpm
+      image: 'uhub.service.ucloud.cn/hello123/wordpress:php7.4-fpm'
+      name: php
+      resources:
+        limits:
+          cpu: '1'
+          memory: 1Gi
+      volumeMounts:
+        - mountPath: /var/www/html/
+          name: wpnfs
+  initContainers:
+    - args:
+        - '-c'
+        - >-
+          wget http://cube.cn-bj.ufileos.com/wordpress-5.4.2.tar && tar -zxvf
+          wordpress-5.4.2.tar && mv /wordpress /data/wordpress
+      command:
+        - sh
+      image: 'uhub.service.ucloud.cn/hello123/busybox:1.28'
+      name: initcube01
+      resources: {}
+      volumeMounts:
+        - mountPath: /data
+          name: wpnfs
+  restartPolicy: Always
+  volumes:
+    - name: defaultconf
+      secret:
+        default.conf: >-
+          c2VydmVyIHsKICAgIGxpc3RlbiAgICAgICA4MDsKICAgIHNlcnZlcl9uYW1lICBsb2NhbGhvc3Q7CgogICAgbG9jYXRpb24gLyB7CiAgICAgICAgcm9vdCAgIC91c3Ivc2hhcmUvbmdpbngvaHRtbC93b3JkcHJlc3M7CiAgICAgICAgaW5kZXggIGluZGV4Lmh0bWwgaW5kZXgucGhwOwogICAgfQogICAgZXJyb3JfcGFnZSAgIDUwMCA1MDIgNTAzIDUwNCAgLzUweC5odG1sOwogICAgbG9jYXRpb24gPSAvNTB4Lmh0bWwgewogICAgICAgIHJvb3QgICAvdXNyL3NoYXJlL25naW54L2h0bWw7CiAgICB9CiAgICBsb2NhdGlvbiB+IFwucGhwJCB7CiAgICAgICAgZmFzdGNnaV9wYXNzIGxvY2FsaG9zdDo5MDAwOwogICAgICAgIGZhc3RjZ2lfaW5kZXggaW5kZXgucGhwOwogICAgICAgIGZhc3RjZ2lfYnVmZmVycyAxNiAxNms7CiAgICAgICAgZmFzdGNnaV9idWZmZXJfc2l6ZSAzMms7CiAgICAgICAgZmFzdGNnaV9wYXJhbSBTQ1JJUFRfRklMRU5BTUUgL3Zhci93d3cvaHRtbC93b3JkcHJlc3MvJGZhc3RjZ2lfc2NyaXB0X25hbWU7CiAgICAgICAgI2ZpeGVzIHRpbWVvdXRzCiAgICAgICAgZmFzdGNnaV9yZWFkX3RpbWVvdXQgNjAwOwogICAgICAgIGluY2x1ZGUgZmFzdGNnaV9wYXJhbXM7CiAgICB9Cn0=
+    - name: wpnfs
+      nfs:
+        address: '10.9.17.238:/'
+        mountOption: vers=4.0
+status:
+  conditions:
+    - lastTransitionTime: '2020-07-27T09:38:10Z'
+      status: 'True'
+      type: Initialized
+    - lastTransitionTime: '2020-07-27T09:38:12Z'
+      status: 'True'
+      type: Ready
+    - lastTransitionTime: '2020-07-27T09:38:12Z'
+      status: 'True'
+      type: ContainersReady
+    - lastTransitionTime: '2020-07-27T09:36:48Z'
+      status: 'True'
+      type: PodScheduled
+  containerStatuses:
+    - lastState: {}
+      name: nginx
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: '2020-07-27T09:38:11Z'
+    - lastState: {}
+      name: php
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: '2020-07-27T09:38:12Z'
+  phase: Running
+  podIp: 10.9.87.144
+  startTime: '2020-07-27T09:36:48Z'
